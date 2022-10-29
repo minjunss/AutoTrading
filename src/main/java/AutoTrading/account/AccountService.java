@@ -1,7 +1,8 @@
-package com.example.UbitAutoTrading.account;
+package AutoTrading.account;
 
-import com.example.UbitAutoTrading.jwt.JwtTokenProvider;
-import com.example.UbitAutoTrading.paths.UpbitApiPaths;
+
+import AutoTrading.jwt.JwtTokenProvider;
+import AutoTrading.paths.UpbitApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;

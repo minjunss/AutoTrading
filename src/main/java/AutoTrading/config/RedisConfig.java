@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.config;
+package AutoTrading.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

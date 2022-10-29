@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.currentPrice;
+package AutoTrading.currentPrice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

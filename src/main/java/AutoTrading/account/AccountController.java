@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.account;
+package AutoTrading.account;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

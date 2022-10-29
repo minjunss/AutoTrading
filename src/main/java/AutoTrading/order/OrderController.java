@@ -1,13 +1,15 @@
-package com.example.UbitAutoTrading.order;
+package AutoTrading.order;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 @RestController
@@ -25,6 +27,18 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping("/api/v1/autoTrade")
+    public ResponseEntity autoTrade() {
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/api/v1/possibleOrder")
+    public ResponseEntity getPossibleOrder() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String possibleOrder = orderService.getPossibleOrder();
+
+        return new ResponseEntity<>(possibleOrder, HttpStatus.OK);
+    }
 
 
 }

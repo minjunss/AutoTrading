@@ -1,4 +1,4 @@
-package AutoTrading.candle;
+package AutoTrading.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,11 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash(value = "candle")
-public class Candle {
+@RedisHash(value = "possibleOrder")
+public class PossibleOrder {
 
     @Id
-    private Long candleId;
-    private String market;
-    private Integer tradePrice;
-    private String candleDateTimeKst;
-
-
+    private Long id;
+    private String bidPossibleOrder;
+    private String askPossibleOrder;
 }

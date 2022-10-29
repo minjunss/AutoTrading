@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.config;
+package AutoTrading.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

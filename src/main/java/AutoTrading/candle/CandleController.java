@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.candle;
+package AutoTrading.candle;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,10 +15,10 @@ public class CandleController {
     private final CandleService candleService;
 
     @GetMapping("/api/v1/candles/minutes/{unit}")
-    public ResponseEntity getMinuteCandle (@PathVariable int unit) {
+    public ResponseEntity getMinuteCandleRSI (@PathVariable int unit) {
 
-        String s = candleService.viewMinuteCandle(unit);
+        double RSI = candleService.viewMinuteCandleRSI(unit);
 
-        return new ResponseEntity<>(s, HttpStatus.OK);
+        return new ResponseEntity<>(RSI, HttpStatus.OK);
     }
 }

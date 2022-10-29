@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.jwt;
+package AutoTrading.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.candle;
+package AutoTrading.candle;
 
 import org.springframework.data.repository.CrudRepository;
 

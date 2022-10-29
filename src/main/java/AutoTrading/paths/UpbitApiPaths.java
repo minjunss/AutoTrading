@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.paths;
+package AutoTrading.paths;
 
 public final class UpbitApiPaths {
     public static final String SERVER_URL = "https://api.upbit.com";

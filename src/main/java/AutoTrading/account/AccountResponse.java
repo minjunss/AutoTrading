@@ -1,4 +1,4 @@
-package com.example.UbitAutoTrading.account;
+package AutoTrading.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
