@@ -1,7 +1,5 @@
-package AutoTrading.order;
+package AutoTrading.account;
 
-import AutoTrading.account.Account;
-import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,11 +11,9 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash(value = "possibleOrder")
-public class PossibleOrder {
-
+@RedisHash(value = "accountBalance")
+public class AccountBalance {
     @Id
     private Long id;
-    private JsonObject askAccount;
-    private JsonObject bidAccount;
+    private String balance;
 }

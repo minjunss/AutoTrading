@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,17 +29,17 @@ public class OrderController {
     }
 
     @PostMapping("/api/v1/autoTrade")
-    public ResponseEntity autoTrade() {
+    public ResponseEntity autoTrade() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        orderService.autoTrade();
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/api/v1/possibleOrder")
     public ResponseEntity getPossibleOrder() throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String possibleOrder = orderService.getPossibleOrder();
+        String[] possibleOrder = orderService.getPossibleOrder();
 
-        return new ResponseEntity<>(possibleOrder, HttpStatus.OK);
+        return new ResponseEntity<>(Arrays.toString(possibleOrder), HttpStatus.OK);
     }
-
 
 }
