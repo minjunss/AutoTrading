@@ -33,7 +33,7 @@ public class CandleService {
 
         try {
             HttpClient client = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/" + unit + "?market=KRW-BTC&count=15");
+            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/" + unit + "?market=KRW-BTC&count=72");
             request.addHeader("accept", "application/json");
 
             HttpResponse response = client.execute(request);

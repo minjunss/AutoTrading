@@ -14,6 +14,6 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash(value = "uuid")
 public class Uuid {
     @Id
-    private Long id;
+    private String id;
     private String uuid;
 }
