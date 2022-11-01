@@ -1,0 +1,17 @@
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-active: 10 # pool? ??? ? ?? ??? ???
+        max-idle: 10 # pool? 'idle' ??? ???
+        min-idle: 2
+    host: 127.0.0.1
+    port: 6379
+
+security:
+  secret-key: ENC(3lZIhyiE5B7gjJdle4mL2QIOFKAooTXO45eCp1YHv1Vm37iYUdZPfsJz7TJHW1Q6PI7OkHp/f/Y=)
+  access-key: ENC(HEZS4c7pG61oOJ+dfKcmpMnV3xBzWb+mPEAfLkTUGXFF7ECmnrdNK13aVqyNXF+61iux5NL9R1M=)
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
