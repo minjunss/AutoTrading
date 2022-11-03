@@ -213,9 +213,9 @@ public class OrderService {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                double rsi = candleService.viewMinuteCandleRSI(minute);
+                double cci = candleService.viewMinuteCandleCCI(minute);
 
-                if (rsi <= 25) {
+                if (cci <= -180) {
                     try {
                         BalanceDto balanceDto = getPossibleOrder();
                         if(Integer.parseInt(balanceDto.getBidBalance()) >= 5000) {
@@ -227,7 +227,7 @@ public class OrderService {
                     orderStateDoneCheck30sec();
                 }
 
-                if (rsi >= 75) {
+                if (cci >= 180) {
                     try {
                         BalanceDto balanceDto = getPossibleOrder();
                         if(Integer.parseInt(balanceDto.getAskBalance()) > 0) {

@@ -33,7 +33,7 @@ public class CandleService {
 
         try {
             HttpClient client = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/" + unit + "?market=KRW-BTC&count=72");
+            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/" + unit + "?market=KRW-BTC&count=200");
             request.addHeader("accept", "application/json");
 
             HttpResponse response = client.execute(request);
@@ -53,28 +53,32 @@ public class CandleService {
         return 0;
     }
 
-    private double getRSI() {
-        Iterable<Candle> candles = candleRepository.findAll();
-        List<Candle> candleList = new ArrayList<>();
+    public double viewMinuteCandleCCI(int unit) {
 
+        try {
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/" + unit + "?market=KRW-BTC&count=20");
+            request.addHeader("accept", "application/json");
 
-        for (Candle candle : candles) {
-            candleList.add(candle);
+            HttpResponse response = client.execute(request);
+            HttpEntity entity = response.getEntity();
+            String result = EntityUtils.toString(entity, "UTF-8");
+
+            saveCandle(result);
+
+            double CCI = getCCI();
+
+            return CCI;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        candleList.sort(new Comparator<Candle>() {
-            @Override
-            public int compare(Candle o1, Candle o2) {
-                String o1Time = o1.getCandleDateTimeKst().replace("-", "");
-                o1Time = o1Time.replace("T", "");
-                o1Time = o1Time.replace(":", "");
-                String o2Time = o2.getCandleDateTimeKst().replace("-", "");
-                o2Time = o2Time.replace("T", "");
-                o2Time = o2Time.replace(":", "");
-                if (Long.parseLong(o1Time) < Long.parseLong(o2Time)) return -1;
-                else if (Long.parseLong(o1Time) > Long.parseLong(o2Time)) return 1;
-                return 0;
-            }
-        });
+
+        return 0;
+    }
+
+    /*RSI 미완성*/
+    private double getRSI() {
+        List<Candle> candleList = getCandleList();
 
         double AU = 0;
         double AD = 0;
@@ -83,11 +87,11 @@ public class CandleService {
         List<Integer> auList = new ArrayList<>();
         List<Integer> adList = new ArrayList<>();
 
-        int i=1;
+        int i = 1;
         for (Candle candle : candleList) {
             int currentPrice = candle.getTradePrice();
             if (i >= 2) {
-                if(currentPrice >= temp) auList.add(currentPrice - temp);
+                if (currentPrice >= temp) auList.add(currentPrice - temp);
                 else adList.add(temp - currentPrice);
             }
             temp = currentPrice;
@@ -113,6 +117,61 @@ public class CandleService {
         return RSI;
     }
 
+    private double getCCI() {
+        List<Candle> candleList = getCandleList();
+        double TP = 0;
+        double SMA;
+        double MAD;
+        double CV = 0.015;
+        List<Double> TPList = new ArrayList<>();
+        List<Double> MADList = new ArrayList<>();
+
+
+        for (Candle candle : candleList) {
+            TP = (candle.getHighPrice() + candle.getLowPrice() + candle.getTradePrice()) / 3.0;
+            TPList.add(TP);
+        }
+        DoubleSummaryStatistics tpStats = TPList.stream().mapToDouble(Double::doubleValue).summaryStatistics();
+        SMA = tpStats.getAverage();
+
+        for (Double tp : TPList) {
+            MADList.add(Math.abs(tp - SMA));
+        }
+        DoubleSummaryStatistics madStats = MADList.stream().mapToDouble(Double::doubleValue).summaryStatistics();
+        MAD = madStats.getAverage();
+        double CCI = (TP - SMA) / (CV * MAD);
+
+        candleRepository.deleteAll();
+        log.info("CCI: {}", CCI);
+
+        return CCI;
+    }
+
+    private List<Candle> getCandleList() {
+        Iterable<Candle> candles = candleRepository.findAll();
+        List<Candle> candleList = new ArrayList<>();
+
+
+        for (Candle candle : candles) {
+            candleList.add(candle);
+        }
+        candleList.sort(new Comparator<Candle>() {
+            @Override
+            public int compare(Candle o1, Candle o2) {
+                String o1Time = o1.getCandleDateTimeKst().replace("-", "");
+                o1Time = o1Time.replace("T", "");
+                o1Time = o1Time.replace(":", "");
+                String o2Time = o2.getCandleDateTimeKst().replace("-", "");
+                o2Time = o2Time.replace("T", "");
+                o2Time = o2Time.replace(":", "");
+                if (Long.parseLong(o1Time) < Long.parseLong(o2Time)) return -1;
+                else if (Long.parseLong(o1Time) > Long.parseLong(o2Time)) return 1;
+                return 0;
+            }
+        });
+        return candleList;
+    }
+
     private void saveCandle(String result) {
         JsonArray obj = gson.fromJson(result, JsonArray.class);
 
@@ -123,6 +182,8 @@ public class CandleService {
             Candle candle = Candle.builder()
                     .market(temp.get("market").getAsString())
                     .tradePrice(temp.get("trade_price").getAsInt())
+                    .highPrice(temp.get("high_price").getAsInt())
+                    .lowPrice(temp.get("low_price").getAsInt())
                     .candleDateTimeKst(temp.get("candle_date_time_kst").getAsString())
                     .build();
 

@@ -15,7 +15,7 @@ import java.io.IOException;
 @Slf4j
 public class CurrentPriceService {
 
-    public String viewCurrentPrice(String markets) throws IOException {
+    public String viewCurrentPrice(String markets) {
         try {
             HttpClient client = HttpClientBuilder.create().build();
             HttpGet request = new HttpGet("https://api.upbit.com/v1/ticker?markets=" + markets);

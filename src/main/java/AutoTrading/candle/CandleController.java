@@ -14,11 +14,20 @@ public class CandleController {
 
     private final CandleService candleService;
 
-    @GetMapping("/api/v1/candles/minutes/{unit}")
-    public ResponseEntity getMinuteCandleRSI (@PathVariable int unit) {
+    // 미완성
+    @GetMapping("/api/v1/candles/minutes/rsi/{unit}")
+    public ResponseEntity getMinuteCandleRSI(@PathVariable int unit) {
 
         double RSI = candleService.viewMinuteCandleRSI(unit);
 
         return new ResponseEntity<>(RSI, HttpStatus.OK);
+    }
+
+    @GetMapping("api/v1/candles/minutes/cci/{unit}")
+    public ResponseEntity getMinuteCandleCCI(@PathVariable int unit) {
+
+        double CCI = candleService.viewMinuteCandleCCI(unit);
+
+        return new ResponseEntity<>(CCI, HttpStatus.OK);
     }
 }

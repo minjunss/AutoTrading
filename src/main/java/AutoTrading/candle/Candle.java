@@ -3,13 +3,11 @@ package AutoTrading.candle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @RedisHash(value = "candle")
 public class Candle {
@@ -18,7 +16,7 @@ public class Candle {
     private Long candleId;
     private String market;
     private Integer tradePrice;
+    private Integer highPrice;
+    private Integer lowPrice;
     private String candleDateTimeKst;
-
-
 }
