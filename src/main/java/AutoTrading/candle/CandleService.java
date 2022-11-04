@@ -76,39 +76,54 @@ public class CandleService {
         return 0;
     }
 
-    /*RSI 미완성*/
     private double getRSI() {
         List<Candle> candleList = getCandleList();
 
         double AU = 0;
         double AD = 0;
-        int temp = 0;
+        double temp = 0;
 
-        List<Integer> auList = new ArrayList<>();
-        List<Integer> adList = new ArrayList<>();
+        List<Double> auList = new ArrayList<>();
+        List<Double> adList = new ArrayList<>();
+        List<Double> realAuList = new ArrayList<>();
+        List<Double> realAdList = new ArrayList<>();
 
         int i = 1;
         for (Candle candle : candleList) {
             int currentPrice = candle.getTradePrice();
-            if (i >= 2) {
-                if (currentPrice >= temp) auList.add(currentPrice - temp);
-                else adList.add(temp - currentPrice);
+            if (i >= 2 && i <= 14) {
+                if (currentPrice >= temp) {
+                    auList.add(currentPrice - temp);
+                    adList.add(0.0);
+                } else {
+                    auList.add(0.0);
+                    adList.add(temp - currentPrice);
+                }
+                if(i == 14) {
+                    AU = auList.stream().mapToDouble(s -> s).sum() / 14;
+                    AD = adList.stream().mapToDouble(s -> s).sum() / 14;
+                }
+            }
+            if (i == 15) {
+                realAuList.add(AU);
+                realAdList.add(AD);
+            }
+            if (i >= 16) {
+                if (currentPrice >= temp) {
+                    AU = ((13 * AU) + (currentPrice - temp)) / 14;
+                    AD = (13 * AD) / 14;
+                } else {
+                    AU = (13 * AU) / 14;
+                    AD = ((13 * AD) + (temp - currentPrice)) / 14;
+                }
+                realAuList.add(AU);
+                realAdList.add(AD);
             }
             temp = currentPrice;
             i++;
         }
-
-        IntSummaryStatistics auStats = auList.stream()
-                .mapToInt(Integer::intValue)
-                .summaryStatistics();
-        IntSummaryStatistics adStats = adList.stream()
-                .mapToInt(Integer::intValue)
-                .summaryStatistics();
-        AU = auStats.getAverage();
-        AD = adStats.getAverage();
-        double RS = AU / AD;
-
-        double RSI = RS / (1 + RS) * 100;
+        double RS = realAuList.get(realAuList.size() - 1) / realAdList.get(realAdList.size() - 1);
+        double RSI = (RS / (1 + RS)) * 100;
 
         candleRepository.deleteAll();
 

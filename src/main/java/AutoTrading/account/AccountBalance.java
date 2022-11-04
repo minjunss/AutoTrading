@@ -15,5 +15,6 @@ import org.springframework.data.redis.core.RedisHash;
 public class AccountBalance {
     @Id
     private Long id;
-    private String balance;
+    private String askBalance;
+    private String bidBalance;
 }

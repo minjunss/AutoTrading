@@ -79,10 +79,12 @@ public class OrderService {
 
             String result = EntityUtils.toString(entity, "UTF-8");
             JsonObject obj = gson.fromJson(result, JsonObject.class);
+
             Uuid uuid = Uuid.builder()
                     .uuid(obj.get("uuid").getAsString())
                     .id("id")
                     .build();
+
             uuidRepository.save(uuid);
 
         } catch (IOException e) {
@@ -191,16 +193,13 @@ public class OrderService {
                 .bidAccount(obj.get("bid_account").getAsJsonObject())
                 .build();
 
-        AccountBalance askAccountBalance = AccountBalance.builder()
-                .balance(possibleOrder.getAskAccount().get("balance").getAsString())
+        AccountBalance accountBalance = AccountBalance.builder()
+                .askBalance(possibleOrder.getAskAccount().get("balance").getAsString())
+                .bidBalance(possibleOrder.getBidAccount().get("balance").getAsString())
                 .build();
 
-        AccountBalance bidAccountBalance = AccountBalance.builder()
-                .balance(possibleOrder.getBidAccount().get("balance").getAsString())
-                .build();
-
-        String askBalance = askAccountBalance.getBalance();
-        String bidBalance = bidAccountBalance.getBalance();
+        String askBalance = accountBalance.getAskBalance();
+        String bidBalance = accountBalance.getBidBalance();
 
         BalanceDto balanceDto = new BalanceDto(askBalance, bidBalance);
 
@@ -213,9 +212,9 @@ public class OrderService {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                double cci = candleService.viewMinuteCandleCCI(minute);
+                double rsi = candleService.viewMinuteCandleRSI(minute);
 
-                if (cci <= -180) {
+                if (rsi <= 20) {
                     try {
                         BalanceDto balanceDto = getPossibleOrder();
                         if(Integer.parseInt(balanceDto.getBidBalance()) >= 5000) {
@@ -227,7 +226,7 @@ public class OrderService {
                     orderStateDoneCheck30sec();
                 }
 
-                if (cci >= 180) {
+                if (rsi >= 80) {
                     try {
                         BalanceDto balanceDto = getPossibleOrder();
                         if(Integer.parseInt(balanceDto.getAskBalance()) > 0) {
@@ -241,8 +240,6 @@ public class OrderService {
             }
         };
         timer.schedule(timerTask, 1000, 10000);
-
-
     }
 
     private QueryAndJwtDto getJwtToken(HashMap<String, String> params) throws NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -288,10 +285,15 @@ public class OrderService {
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             int count = 0;
-            @SneakyThrows
             @Override
             public void run() {
-                if(count++ < 1) checkOrder();
+                if(count++ < 1) {
+                    try {
+                        checkOrder();
+                    } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 else timer.cancel();
             }
         };
