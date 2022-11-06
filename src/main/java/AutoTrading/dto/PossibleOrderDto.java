@@ -1,5 +1,4 @@
-package AutoTrading.order;
-
+package AutoTrading.dto;
 
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class PossibleOrder {
+public class PossibleOrderDto {
 
     private JsonObject askAccount;
     private JsonObject bidAccount;

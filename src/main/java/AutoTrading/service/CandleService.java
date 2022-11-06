@@ -1,17 +1,14 @@
-package AutoTrading.candle;
+package AutoTrading.service;
 
+import AutoTrading.api.OpenApi;
+import AutoTrading.repository.CandleRepository;
+import AutoTrading.entity.Candle;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,26 +23,24 @@ import java.util.*;
 public class CandleService {
 
     private final CandleRepository candleRepository;
+    private final OpenApi openApi;
     private final Gson gson;
 
 
-    public double viewMinuteCandleRSI(int unit) {
+    public double viewMinuteCandleRSIorCCI(String market, String indicator, int unit) {
 
         try {
-            HttpClient client = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/" + unit + "?market=KRW-BTC&count=200");
-            request.addHeader("accept", "application/json");
+            String result = openApi.getMinuteCandle(market, indicator, unit);
 
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            String result = EntityUtils.toString(entity, "UTF-8");
+            saveCandles(result);
+            if(indicator.equalsIgnoreCase("rsi")) {
 
+                return getRSI();
+            }
+            else if(indicator.equalsIgnoreCase("cci")) {
 
-            saveCandle(result);
-
-            double RSI = getRSI();
-
-            return RSI;
+                return getCCI();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,26 +48,17 @@ public class CandleService {
         return 0;
     }
 
-    public double viewMinuteCandleCCI(int unit) {
-
+    public double viewPresentPrice() {
         try {
-            HttpClient client = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/" + unit + "?market=KRW-BTC&count=20");
-            request.addHeader("accept", "application/json");
+            String result = openApi.getPresentPrice();
 
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            String result = EntityUtils.toString(entity, "UTF-8");
+            JsonArray jsonElements = gson.fromJson(result, JsonArray.class);
+            JsonObject obj = jsonElements.get(0).getAsJsonObject();
 
-            saveCandle(result);
-
-            double CCI = getCCI();
-
-            return CCI;
+            return obj.get("trade_price").getAsDouble();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return 0;
     }
 
@@ -187,7 +173,7 @@ public class CandleService {
         return candleList;
     }
 
-    private void saveCandle(String result) {
+    private void saveCandles(String result) {
         JsonArray obj = gson.fromJson(result, JsonArray.class);
 
 

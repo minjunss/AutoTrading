@@ -1,4 +1,4 @@
-package AutoTrading.candle;
+package AutoTrading.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

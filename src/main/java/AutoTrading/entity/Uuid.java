@@ -1,4 +1,4 @@
-package AutoTrading.account;
+package AutoTrading.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +11,9 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash(value = "accountBalance")
-public class AccountBalance {
+@RedisHash(value = "uuid")
+public class Uuid {
     @Id
-    private Long id;
-    private String askBalance;
-    private String bidBalance;
+    private String id;
+    private String uuid;
 }

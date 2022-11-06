@@ -1,4 +1,4 @@
-package AutoTrading.order;
+package AutoTrading.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

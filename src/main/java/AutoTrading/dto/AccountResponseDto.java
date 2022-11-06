@@ -1,4 +1,4 @@
-package AutoTrading.account;
+package AutoTrading.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountResponse {
+public class AccountResponseDto {
 
     private String currency;
 
